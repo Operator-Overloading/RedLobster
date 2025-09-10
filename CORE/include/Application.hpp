@@ -4,7 +4,11 @@
 #include "Export.hpp"
 #include "Layer.hpp"
 #include "Event.hpp"
+
 #include "PLATFORM/include/windows/Win32Window.hpp"
+#include "PLATFORM/include/opengl/OpenGLWindow.hpp"
+
+#include "INPUT/include/Input.hpp"
 
 namespace Lobster
 {
@@ -25,7 +29,7 @@ namespace Lobster
 		int Run();
 	protected:
 		bool is_running = false;
-		Win32Window* window;
+		Window* window;
 		LayerStack layer_stack;
 	};
 }

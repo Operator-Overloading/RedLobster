@@ -1,6 +1,7 @@
 // INPUT/include/KeyCode.hpp
 
 #pragma once
+#include "Export.hpp"
 
 namespace Lobster
 {
@@ -140,11 +141,11 @@ namespace Lobster
 			RightControl        = 345,
 			RightAlt            = 346,
 			RightSuper          = 347,
-			Menu                = 348
+			Menu                = 348,
 		};
 	}
 
-	namespace MouseButton
+	namespace Mouse
 	{
 		enum : MouseCode
 		{
@@ -160,7 +161,11 @@ namespace Lobster
 			Last             = b7,
 			Left             = b0,
 			Right            = b1,
-			Middle           = b2
+			Middle           = b2,
+			Back             = b3,
+			Forward          = b4,
 		};
 	}
+
+	LOBSTER_API KeyCode Win32ToGlfwKey(int win32Key);
 }

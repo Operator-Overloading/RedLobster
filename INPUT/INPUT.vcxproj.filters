@@ -24,18 +24,24 @@
     <ClInclude Include="include\KeyCode.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Mouse.hpp">
+    <ClInclude Include="include\KeyboardInputs.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Keyboard.hpp">
+    <ClInclude Include="include\MouseInputs.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Input.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Keyboard.cpp">
+    <ClCompile Include="src\KeyboardInputs.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Mouse.cpp">
+    <ClCompile Include="src\MouseInputs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\KeyCode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

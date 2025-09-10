@@ -61,12 +61,13 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp23</LanguageStandard>
       <AdditionalIncludeDirectories>$(ProjectDir)\include;$(SolutionDir);$(SolutionDir)\CORE\include;$(ProjectDir)/include;$(SolutionDir)\CORE\include;$(SolutionDir)\PLATFORM\include;$(SolutionDir);</AdditionalIncludeDirectories>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)\.build\$(Configuration)\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>platform.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>core.lib;platform.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -79,15 +80,17 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp23</LanguageStandard>
       <AdditionalIncludeDirectories>$(ProjectDir)\include;$(SolutionDir);$(SolutionDir)\CORE\include;$(ProjectDir)/include;$(SolutionDir)\CORE\include;$(SolutionDir)\PLATFORM\include;$(SolutionDir);</AdditionalIncludeDirectories>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)\.build\$(Configuration)\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>platform.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>core.lib;platform.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\Input.hpp" />
     <ClInclude Include="include\KeyboardEvents.hpp" />
     <ClInclude Include="include\KeyboardInputs.hpp" />
     <ClInclude Include="include\KeyCode.hpp" />
@@ -96,6 +99,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\KeyboardInputs.cpp" />
+    <ClCompile Include="src\KeyCode.cpp" />
     <ClCompile Include="src\MouseInputs.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

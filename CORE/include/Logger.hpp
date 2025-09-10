@@ -8,7 +8,7 @@
 
 namespace Lobster
 {
-	enum LogLevel : unsigned char
+	enum LOBSTER_API LogLevel : unsigned char
 	{
 		LOG_LEVEL_UNKNOWN = 255,
 		LOG_LEVEL_DEBUG = 0,

@@ -1,11 +1,8 @@
 // PLATFORM/src/windows/Win32Window.cpp
 
 #include "windows/Win32Window.hpp"
-#include "resource.h"
 
-#include "INPUT/include/KeyCode.hpp"
-#include "INPUT/include/MouseEvents.hpp"
-#include "INPUT/include/KeyboardEvents.hpp"
+#include "INPUT/include/Input.hpp"
 
 #include "CORE/include/ApplicationEvents.hpp"
 #include "CORE/include/Logger.hpp"
@@ -15,21 +12,21 @@ namespace Lobster
 {
 	Win32Window::WindowClass Win32Window::WindowClass::wnd_class;
 
-	Win32Window::WindowClass::WindowClass() : instance(GetModuleHandle(nullptr))
+	Win32Window::WindowClass::WindowClass() : instance(GetModuleHandle(0))
 	{
-		WNDCLASSEX wc = {0};
+		WNDCLASSEX wc = {};
 		wc.cbSize = sizeof(wc);
 		wc.style = CS_OWNDC;
 		wc.lpfnWndProc = HandleMsgSetup;
 		wc.cbClsExtra = 0;
 		wc.cbWndExtra = 0;
 		wc.hInstance = GetInstance();
-		wc.hIcon = static_cast<HICON>(LoadImage(GetInstance(),MAKEINTRESOURCE(IDI_ICON1),IMAGE_ICON,32,32,0));
+		wc.hIcon = static_cast<HICON>(LoadImage(GetInstance(),MAKEINTRESOURCE(101),IMAGE_ICON,32,32,0));
 		wc.hCursor = 0;
 		wc.hbrBackground = 0;
 		wc.lpszMenuName = 0;
 		wc.lpszClassName = GetName();
-		wc.hIconSm = static_cast<HICON>(LoadImage(GetInstance(),MAKEINTRESOURCE(IDI_ICON1),IMAGE_ICON,16,16,0));
+		wc.hIconSm = static_cast<HICON>(LoadImage(GetInstance(),MAKEINTRESOURCE(101),IMAGE_ICON,16,16,0));
 
 		RegisterClassEx(&wc);
 	}
@@ -82,26 +79,37 @@ namespace Lobster
 		DestroyWindow(handle);
 	}
 
-	void Win32Window::SetWidth(int width)
-	{
-	}
-
-	void Win32Window::SetHeight(int height)
-	{
-	}
-
-	void Win32Window::SetMinimized(bool minimized)
-	{
-	}
-
-	void Win32Window::SetFocused(bool focused)
-	{
-	}
-
 	void Win32Window::SetTitle(const std::string& title)
 	{
 		this->title = title.c_str();;
 		SetWindowText(handle,this->title);
+	}
+
+	void Win32Window::SetCursorConfined(bool confined)
+	{
+		if(confined)
+		{
+			RECT rect;
+			GetClientRect(handle,&rect);
+			MapWindowPoints(handle,0,reinterpret_cast<POINT*>(&rect),2);
+			ClipCursor(&rect);
+		}
+		else
+		{
+			ClipCursor(0);
+		}
+	}
+
+	void Win32Window::SetCursorVisible(bool visible)
+	{
+		if(visible)
+		{
+			while(::ShowCursor(1) < 0);
+		}
+		else
+		{
+			while(::ShowCursor(0) >= 0);
+		}
 	}
 
 	void Win32Window::SetCursorEnabled(bool enabled)
@@ -110,16 +118,13 @@ namespace Lobster
 		
 		if(enabled)
 		{
-			while(::ShowCursor(1) < 0);
-			ClipCursor(0);
+			SetCursorVisible(true);
+			SetCursorConfined(false);
 		}
 		else
 		{
-			while(::ShowCursor(0) >= 0);
-			RECT rect;
-			GetClientRect(handle,&rect);
-			MapWindowPoints(handle,0,reinterpret_cast<POINT*>(&rect),2);
-			ClipCursor(&rect);
+			SetCursorVisible(false);
+			SetCursorConfined(true);
 		}
 	}
 
@@ -238,7 +243,7 @@ namespace Lobster
 		{
 			const POINTS pt = MAKEPOINTS(lparam);
 
-			WindowMoveEvent windowmove((short)(pt.x),(short)(pt.y));
+			WindowMoveEvent windowmove((int)(pt.x),(int)(pt.y));
 			if(this->event_callback != nullptr)
 				this->event_callback(windowmove);
 			break;
@@ -257,13 +262,34 @@ namespace Lobster
 			WindowFocusEvent focusgained{};
 			if(this->event_callback != nullptr)
 				this->event_callback(focusgained);
+			focused = true;
+			minimized = false;
 			break;
 		}
 		case WM_KILLFOCUS:
 		{
+			const POINTS pt = MAKEPOINTS(lparam);
+
 			WindowFocusLostEvent focuslost{};
 			this->event_callback(focuslost);
-			//kbd.Clear();
+
+			MouseLeftEvent leave{(float)pt.x,(float)pt.y};
+			this->event_callback(leave);
+
+			focused = false;
+			Input::ClearStates();
+			break;
+		}
+		case WM_SYSCOMMAND:
+		{
+			if((wparam & 0xFFF0) == 0xF020) // On Minimize
+			{
+				minimized = true;
+			}
+			if((wparam & 0xFFF0) == 0xF030) // On Maximize
+			{
+				minimized = false;
+			}
 			break;
 		}
 	
@@ -275,9 +301,9 @@ namespace Lobster
 			//{
 				//break;
 			//}
-			if(!(lparam & 0x40000000))
+			if(!(lparam & 0x40000000) || Input::Autorepeat())
 			{
-				KeyPressedEvent keypressedevent(static_cast<unsigned short>(wparam));
+				KeyPressedEvent keypressedevent(Win32ToGlfwKey(wparam));
 				this->event_callback(keypressedevent);
 			}
 			break;
@@ -289,7 +315,7 @@ namespace Lobster
 			//{
 				//break;
 			//}
-			KeyReleasedEvent keyreleasedevent(static_cast<unsigned short>(wparam));
+			KeyReleasedEvent keyreleasedevent(Win32ToGlfwKey(wparam));
 			this->event_callback(keyreleasedevent);
 			break;
 		}
@@ -320,7 +346,7 @@ namespace Lobster
 				//break;
 			//}
 
-			MouseMovedEvent mousemove((float)pt.x,(float)pt.y);
+			MouseMovedEvent mousemove{(float)pt.x,(float)pt.y};
 			this->event_callback(mousemove);
 
 			TRACKMOUSEEVENT tme={};
@@ -333,11 +359,37 @@ namespace Lobster
 
 			break;
 		}
+		case WM_LBUTTONDOWN:
+		case WM_MBUTTONDOWN:
+		case WM_RBUTTONDOWN:
+		case WM_XBUTTONDOWN:
+		{
+			// 513, 519, 516
+			// This is the most retarded ternary operator I've ever written, I should've just put this in the if/else statement. Oh well
+			MouseCode button = (msg == WM_XBUTTONDOWN) ? GET_XBUTTON_WPARAM(wparam) + 2 : ((msg / 3u) - 171);
+			MouseClickedEvent mousepress(button);
+			this->event_callback(mousepress);
+
+			break;
+		}
+		case WM_LBUTTONUP:
+		case WM_MBUTTONUP:
+		case WM_RBUTTONUP:
+		case WM_XBUTTONUP:
+		{
+			MouseCode button = (msg == WM_XBUTTONUP) ? GET_XBUTTON_WPARAM(wparam) + 2 : ((msg / 3u) - 171);
+			MouseReleasedEvent mouserelease(button);
+			this->event_callback(mouserelease);
+
+			break;
+		}
 		case WM_MOUSELEAVE:
 		{
 			if(cursor_in_window)
 			{
-				MouseLeftEvent leave{};
+				const POINTS pt = MAKEPOINTS(lparam);
+
+				MouseLeftEvent leave{(float)pt.x,(float)pt.y};
 				this->event_callback(leave);
 
 				cursor_in_window = false;
@@ -348,7 +400,9 @@ namespace Lobster
 		{
 			if(!cursor_in_window)
 			{
-				MouseEnteredEvent enter{};
+				const POINTS pt = MAKEPOINTS(lparam);
+
+				MouseEnteredEvent enter{(float)pt.x,(float)pt.y};
 				this->event_callback(enter);
 
 				cursor_in_window = true;
@@ -363,9 +417,9 @@ namespace Lobster
 				//break;
 			//}
 			const POINTS pt = MAKEPOINTS(lparam);
-			const int delta = GET_WHEEL_DELTA_WPARAM(wparam);
+			const float delta = GET_WHEEL_DELTA_WPARAM(wparam) / float(WHEEL_DELTA);
 			//mouse.OnWheelDelta((float)pt.x,(float)pt.y,(float)delta);
-			MouseScrolledEvent rawscroll((float)delta,0);
+			MouseScrolledEvent rawscroll(0,delta);
 			this->event_callback(rawscroll);
 			break;
 		}
@@ -376,9 +430,9 @@ namespace Lobster
 				//break;
 			//}
 			const POINTS pt = MAKEPOINTS(lparam);
-			const int delta = GET_WHEEL_DELTA_WPARAM(wparam);
+			const float delta = GET_WHEEL_DELTA_WPARAM(wparam) / float(WHEEL_DELTA);
 			//mouse.OnWheelDelta((float)pt.x,(float)pt.y,(float)delta);
-			MouseScrolledEvent rawscroll(0,(float)delta);
+			MouseScrolledEvent rawscroll(delta,0);
 			this->event_callback(rawscroll);
 			break;
 		}
@@ -387,10 +441,6 @@ namespace Lobster
 		/************** RAW MOUSE MESSAGES **************/
 		case WM_INPUT:
 		{
-			//if(!mouse.RawEnabled())
-			//{
-				//break;
-			//}
 			UINT size = 0;
 
 			if(GetRawInputData(reinterpret_cast<HRAWINPUT>(lparam),RID_INPUT,0,&size,sizeof(RAWINPUTHEADER))==-1)
@@ -408,71 +458,6 @@ namespace Lobster
 			auto& ri = reinterpret_cast<const RAWINPUT&>(*raw_buffer.data());
 			if(ri.header.dwType == RIM_TYPEMOUSE)
 			{
-				switch(ri.data.mouse.usButtonFlags)
-				{
-				case RI_MOUSE_BUTTON_1_DOWN:
-				{
-					MouseClickedEvent b1pressed(MouseButton::b0);
-					this->event_callback(b1pressed);
-					break;
-				}
-				case RI_MOUSE_BUTTON_1_UP:
-				{
-					MouseReleasedEvent b1release(MouseButton::b0);
-					this->event_callback(b1release);
-					break;
-				}
-				case RI_MOUSE_BUTTON_2_DOWN:
-				{
-					MouseClickedEvent b2pressed(MouseButton::b1);
-					this->event_callback(b2pressed);
-					break;
-				}
-				case RI_MOUSE_BUTTON_2_UP:
-				{
-					MouseReleasedEvent b2release(MouseButton::b1);
-					this->event_callback(b2release);
-					break;
-				}
-				case RI_MOUSE_BUTTON_3_DOWN:
-				{
-					MouseClickedEvent b3pressed(MouseButton::b2);
-					this->event_callback(b3pressed);
-					break;
-				}
-				case RI_MOUSE_BUTTON_3_UP:
-				{
-					MouseReleasedEvent b3release(MouseButton::b2);
-					this->event_callback(b3release);
-					break;
-				}
-				case RI_MOUSE_BUTTON_4_DOWN:
-				{
-					MouseClickedEvent b4pressed(MouseButton::b3);
-					this->event_callback(b4pressed);
-					break;
-				}
-				case RI_MOUSE_BUTTON_4_UP:
-				{
-					MouseReleasedEvent b4release(MouseButton::b3);
-					this->event_callback(b4release);
-					break;
-				}
-				case RI_MOUSE_BUTTON_5_DOWN:
-				{
-					MouseClickedEvent b5pressed(MouseButton::b4);
-					this->event_callback(b5pressed);
-					break;
-				}
-				case RI_MOUSE_BUTTON_5_UP:
-				{
-					MouseReleasedEvent b5release(MouseButton::b4);
-					this->event_callback(b5release);
-					break;
-				}
-				default:
-					break;
-				}
 				break;
 			}
 

@@ -17,9 +17,6 @@ namespace Lobster
 	protected:
 		KeyEvent(const KeyCode keycode) : _keycode(keycode) {}
 
-		static EventType GetStaticType() { return EventType::EventTypeKeyGeneric; }
-		virtual EventType GetType() const { return GetStaticType(); }
-		virtual const char* GetName() const { return "KeyEvent"; }
 
 		KeyCode _keycode;
 	};

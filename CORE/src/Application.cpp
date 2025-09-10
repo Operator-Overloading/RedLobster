@@ -3,12 +3,15 @@
 #pragma once
 #include "Application.hpp"
 #include "Logger.hpp"
+#include "Macros.hpp"
+
+#include <iostream>
 
 namespace Lobster
 {
 	Application::Application()
 	{
-		window = new Win32Window{900,600,"lobsta"};
+		window = new OpenGLWindow(800,600,"lobsta");
 		window->SetEventCallbackFunction(std::bind(&Application::OnEvent,this,std::placeholders::_1));
 	}
 	
@@ -16,10 +19,14 @@ namespace Lobster
 	{
 		EventDispatcher dispatcher(event);
 
-		//Input::OnEvent(event);
+		if(event.GetCategoryFlags() == (EventCategoryInput | EventCategoryKeyboard))
+		{
+			KeyEvent& k = (KeyEvent&)event;
 
-		if(event.GetType() != EventTypeMouseMoved)
-			Logger::Debug(event.ToString());
+			Input::OnKeyEvent(k);
+		}
+
+		Input::OnMouseEvent(event);
 
 		for(auto it = layer_stack.rbegin(); it != layer_stack.rend(); ++it)
 		{
@@ -49,6 +56,8 @@ namespace Lobster
 
 		while(is_running)
 		{
+			Input::MouseUpdate();
+
 			window->Update();
 
 			if(!window->IsMinimized())

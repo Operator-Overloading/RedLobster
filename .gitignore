@@ -417,3 +417,12 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+# Other libraries/third-party software
+GLFW/
+GLAD/
+GLM/
+VULKAN/
+thirdparty/
+
+

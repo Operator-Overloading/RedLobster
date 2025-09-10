@@ -43,12 +43,11 @@ namespace Lobster
 
 		void* GetHandle() override;
 
-		void SetWidth(int width) override;
-		void SetHeight(int height) override;
-		void SetMinimized(bool minimized) override;
-		void SetFocused(bool focused) override;
 		void SetTitle(const std::string& title) override;
-		void SetCursorEnabled(bool enabled) override;
+		void SetCursorConfined(bool confined) override;
+		void SetCursorVisible(bool visible) override;
+
+		void SetCursorEnabled(bool enabled);
 
 		static std::optional<int> ProcessMessages();
 	private:

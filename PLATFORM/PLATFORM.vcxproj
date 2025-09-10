@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
@@ -60,13 +60,14 @@
       <PreprocessorDefinitions>LOBSTER_EXPORTS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp23</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)\include;$(SolutionDir);$(SolutionDir)\CORE\include;$(ProjectDir)\include;$(SolutionDir)\CORE\include;$(SolutionDir);</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)\include;$(SolutionDir);$(SolutionDir)\CORE\include;$(ProjectDir)\include;$(SolutionDir)\CORE\include;$(SolutionDir);$(SolutionDir)\thirdparty\glfw\include;</AdditionalIncludeDirectories>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>core.lib;input.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)\.build\$(Configuration)\</AdditionalLibraryDirectories>
+      <AdditionalDependencies>core.lib;input.lib;glfw3.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)\.build\$(Configuration)\;$(SolutionDir)\thirdparty\glfw\libs\;</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -78,32 +79,25 @@
       <PreprocessorDefinitions>LOBSTER_EXPORTS;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp23</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)\include;$(SolutionDir);$(SolutionDir)\CORE\include;$(ProjectDir)\include;$(SolutionDir)\CORE\include;$(SolutionDir);</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)\include;$(SolutionDir);$(SolutionDir)\CORE\include;$(ProjectDir)\include;$(SolutionDir)\CORE\include;$(SolutionDir);$(SolutionDir)\thirdparty\glfw\include;</AdditionalIncludeDirectories>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>core.lib;input.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)\.build\$(Configuration)\</AdditionalLibraryDirectories>
+      <AdditionalDependencies>core.lib;input.lib;glfw3.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)\.build\$(Configuration)\;$(SolutionDir)\thirdparty\glfw\libs\;</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\opengl\OpenGLWindow.hpp" />
     <ClInclude Include="include\Window.hpp" />
     <ClInclude Include="include\windows\Win32.hpp" />
     <ClInclude Include="include\windows\Win32Window.hpp" />
-    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\opengl\GLFWWindow.cpp" />
     <ClCompile Include="src\windows\Win32Window.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="PLATFORM.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="icon1.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="PLATFORM.APS" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

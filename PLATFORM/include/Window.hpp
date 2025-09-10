@@ -24,11 +24,8 @@ namespace Lobster
 		virtual bool WindowShouldClose() const = 0;
 		virtual std::string GetTitle() const = 0;
 
-		virtual void SetWidth(int width) = 0;
-		virtual void SetHeight(int height) = 0;
-		virtual void SetMinimized(bool minimized) = 0;
-		virtual void SetFocused(bool focused) = 0;
-		virtual void SetCursorEnabled(bool enabled) = 0;
+		virtual void SetCursorConfined(bool b) = 0;
+		virtual void SetCursorVisible(bool b) = 0;
 		virtual void SetTitle(const std::string& title) = 0;
 
 		virtual void* GetHandle() = 0;
