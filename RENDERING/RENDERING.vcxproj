@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
@@ -21,13 +21,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
     <CharacterSet>NotSet</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>NotSet</CharacterSet>
   </PropertyGroup>
@@ -60,13 +60,14 @@
       <PreprocessorDefinitions>LOBSTER_EXPORTS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp23</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)\include;$(SolutionDir);$(SolutionDir)\CORE\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\include;$(SolutionDir);$(SolutionDir)\CORE\include;$(SolutionDir)\thirdparty\glfw\include;$(SolutionDir)\thirdparty\glad\include;</AdditionalIncludeDirectories>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)\.build\$(Configuration)\</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)\.build\$(Configuration)\;$(SolutionDir)\thirdparty\libs\$(Configuration)\glad\;$(SolutionDir)\thirdparty\libs\$(Configuration)\glfw\;$(SolutionDir)\thirdparty\libs\$(Configuration)\glm\;$(SolutionDir)\thirdparty\libs\$(Configuration)\imgui\;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>core.lib;glfw.lib;glad.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -78,17 +79,32 @@
       <PreprocessorDefinitions>LOBSTER_EXPORTS;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp23</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)\include;$(SolutionDir);$(SolutionDir)\CORE\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\include;$(SolutionDir);$(SolutionDir)\CORE\include;$(SolutionDir)\thirdparty\glfw\include;$(SolutionDir)\thirdparty\glad\include;</AdditionalIncludeDirectories>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)\.build\$(Configuration)\</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)\.build\$(Configuration)\;$(SolutionDir)\thirdparty\libs\$(Configuration)\glad\;$(SolutionDir)\thirdparty\libs\$(Configuration)\glfw\;$(SolutionDir)\thirdparty\libs\$(Configuration)\glm\;$(SolutionDir)\thirdparty\libs\$(Configuration)\imgui\;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>core.lib;glfw.lib;glad.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\Source.cpp" />
+    <ClCompile Include="src\Context.cpp" />
+    <ClCompile Include="src\opengl\ContextGL.cpp" />
+    <ClCompile Include="src\opengl\IndexBufferGL.cpp" />
+    <ClCompile Include="src\opengl\RendererGL.cpp" />
+    <ClCompile Include="src\opengl\VertexBufferGL.cpp" />
+    <ClCompile Include="src\Renderer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\Context.hpp" />
+    <ClInclude Include="include\opengl\BufferGL.hpp" />
+    <ClInclude Include="include\opengl\ContextGL.hpp" />
+    <ClInclude Include="include\opengl\IndexBufferGL.hpp" />
+    <ClInclude Include="include\opengl\RendererGL.hpp" />
+    <ClInclude Include="include\opengl\VertexBufferGL.hpp" />
+    <ClInclude Include="include\Renderer.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

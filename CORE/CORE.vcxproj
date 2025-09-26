@@ -21,13 +21,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
     <CharacterSet>NotSet</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>NotSet</CharacterSet>
   </PropertyGroup>
@@ -112,6 +112,9 @@
     </ProjectReference>
     <ProjectReference Include="..\PLATFORM\PLATFORM.vcxproj">
       <Project>{c5b38cba-40b9-4825-b6f0-07cb2578fb91}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\RENDERING\RENDERING.vcxproj">
+      <Project>{37f51081-133b-4b54-8846-5bf75849ad98}</Project>
     </ProjectReference>
     <ProjectReference Include="..\SANDBOX\SANDBOX.vcxproj">
       <Project>{1ae1f261-8f2e-407b-9868-32d7804a27dd}</Project>

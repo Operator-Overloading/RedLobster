@@ -30,6 +30,11 @@ namespace Lobster
 		static void Warning(std::vector<std::string> messages) { Log(LOG_LEVEL_WARNING,messages); }
 		static void Error(std::vector<std::string> messages) { Log(LOG_LEVEL_ERROR,messages); }
 
+		static void Info(std::vector<const char*> messages) { Log(LOG_LEVEL_INFO,messages); }
+		static void Debug(std::vector<const char*> messages) { Log(LOG_LEVEL_DEBUG,messages); }
+		static void Warning(std::vector<const char*> messages) { Log(LOG_LEVEL_WARNING,messages); }
+		static void Error(std::vector<const char*> messages) { Log(LOG_LEVEL_ERROR,messages); }
+
 		static void DrawImguiConsole();
 	private:
 		struct LOBSTER_API LogEntry
@@ -61,5 +66,6 @@ namespace Lobster
 	private:
 		static void Log(LogLevel lvl,const std::string& message);
 		static void Log(LogLevel lvl,std::vector<std::string> messages);
+		static void Log(LogLevel lvl,std::vector<const char*> messages);
 	};
 }

@@ -45,3 +45,11 @@
 #else
 #define LOBSTER_FORCE_INLINE __attribute__((always_inline)) inline
 #endif
+
+#ifdef _DEBUG
+#define BUILD_PATH "..\\.build\\Debug\\"
+#endif
+
+#ifdef NDEBUG
+#define BUILD_PATH "..\\.build\\Release\\"
+#endif

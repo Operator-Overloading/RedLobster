@@ -12,8 +12,13 @@
 #include "INPUT/include/Input.hpp"
 
 #define GLFW_EXPOSE_NATIVE_WIN32
-#include <glfw3.h>
-#include <glfw3native.h>
+#include <GLFW/glfw3.h>
+#include <GLFW/glfw3native.h>
+
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb/stb_image.h>
+
+#include <imgui/imgui.h>
 
 namespace Lobster
 {
@@ -37,6 +42,8 @@ namespace Lobster
 
 		glfwMakeContextCurrent(window);
 		glfwSetWindowUserPointer(window,this);
+
+		SetWindowIcon(BUILD_PATH "icon1.png");
 
 		glfwSetWindowSizeCallback(window,[](GLFWwindow* window,int width,int height)
 		{
@@ -195,8 +202,66 @@ namespace Lobster
 
 	void OpenGLWindow::Update()
 	{
-		glfwSwapBuffers(window);
 		glfwPollEvents();
+	}
+
+	void OpenGLWindow::SetWindowIcon(const char* path)
+	{
+		if(path)
+		{
+			int width,height,channels;
+			unsigned char* data = stbi_load(path,&width,&height,&channels,4);
+			
+			if(data)
+			{
+				GLFWimage icon;
+				icon.width = width;
+				icon.height = height;
+				icon.pixels = data;
+				
+				glfwSetWindowIcon(window,1,&icon);
+				stbi_image_free(data);
+				return;
+			}
+		}
+
+		// Fallback
+		const int size = 32;
+		std::vector<unsigned char> pixels(size * size * 4);
+
+		for(int y = 0; y < size; ++y)
+		{
+			for(int x = 0; x < size; ++x)
+			{
+				int index = (y * size + x) * 4;
+				// Create a blue circle
+				float dx = x - size/2.0f;
+				float dy = y - size/2.0f;
+				float dist = sqrt(dx*dx + dy*dy);
+				
+				if(dist < size/2.0f)
+				{
+					pixels[index] = 255;     // R
+					pixels[index + 1] = 0;   // G
+					pixels[index + 2] = 0;   // B
+					pixels[index + 3] = 255; // A
+				}
+				else
+				{
+					pixels[index] = 0;       // R
+					pixels[index + 1] = 0;   // G
+					pixels[index + 2] = 0;   // B
+					pixels[index + 3] = 0;   // A (transparent)
+				}
+			}
+		}
+
+		GLFWimage icon;
+		icon.width = size;
+		icon.height = size;
+		icon.pixels = pixels.data();
+
+		glfwSetWindowIcon(window,1,&icon);
 	}
 
 	int OpenGLWindow::GetWidth() const
@@ -266,6 +331,20 @@ namespace Lobster
 		else
 		{
 			glfwSetInputMode(window,GLFW_CURSOR,GLFW_CURSOR_HIDDEN);
+		}
+	}
+
+	void OpenGLWindow::SetCursorEnabled(bool enabled)
+	{
+		if(enabled)
+		{
+			glfwSetInputMode(window,GLFW_CURSOR,GLFW_CURSOR_NORMAL);
+			glfwSetCursorPos(window,width/2,height/2);
+		}
+		else
+		{
+			glfwSetInputMode(window,GLFW_CURSOR,GLFW_CURSOR_HIDDEN);
+			glfwSetInputMode(window,GLFW_CURSOR,GLFW_CURSOR_CAPTURED);
 		}
 	}
 }

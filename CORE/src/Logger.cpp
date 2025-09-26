@@ -80,6 +80,16 @@ namespace Lobster
 		Log(lvl,log);
 	}
 
+	void Logger::Log(LogLevel lvl,std::vector<const char*> messages)
+	{
+		std::string log;
+
+		for(const char* msg : messages)
+			log += msg;
+
+		Log(lvl,log);
+	}
+
 	void Logger::DrawImguiConsole()
 	{
 #ifdef _IMGUI

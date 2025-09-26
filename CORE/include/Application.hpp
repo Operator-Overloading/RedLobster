@@ -5,6 +5,8 @@
 #include "Layer.hpp"
 #include "Event.hpp"
 
+#include "RENDERING/include/Renderer.hpp"
+
 #include "PLATFORM/include/windows/Win32Window.hpp"
 #include "PLATFORM/include/opengl/OpenGLWindow.hpp"
 
@@ -31,5 +33,6 @@ namespace Lobster
 		bool is_running = false;
 		Window* window;
 		LayerStack layer_stack;
+		std::shared_ptr<Renderer> renderer;
 	};
 }

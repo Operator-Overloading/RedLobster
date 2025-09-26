@@ -3,6 +3,8 @@
 #pragma once
 #include "Export.hpp"
 
+#include <unordered_map>
+
 namespace Lobster
 {
 	using KeyCode = unsigned short;
@@ -167,5 +169,9 @@ namespace Lobster
 		};
 	}
 
-	LOBSTER_API KeyCode Win32ToGlfwKey(int win32Key);
+	namespace Input
+	{		
+		LOBSTER_API void Init();
+		LOBSTER_API KeyCode Win32ToGlfwKey(unsigned int win32Key);
+	}
 }

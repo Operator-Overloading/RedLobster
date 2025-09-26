@@ -22,7 +22,7 @@ namespace Lobster
 		wc.cbWndExtra = 0;
 		wc.hInstance = GetInstance();
 		wc.hIcon = static_cast<HICON>(LoadImage(GetInstance(),MAKEINTRESOURCE(101),IMAGE_ICON,32,32,0));
-		wc.hCursor = 0;
+		wc.hCursor = LoadCursor(NULL,IDC_ARROW);
 		wc.hbrBackground = 0;
 		wc.lpszMenuName = 0;
 		wc.lpszClassName = GetName();
@@ -58,7 +58,7 @@ namespace Lobster
 		wr.top = 100;
 		wr.bottom = height + wr.top;
 
-		lassert(AdjustWindowRect(&wr,WS_CAPTION|WS_OVERLAPPEDWINDOW|WS_SYSMENU,FALSE),"Failed to adjust window rect!");
+		lassert(AdjustWindowRect(&wr,WS_CAPTION|WS_OVERLAPPEDWINDOW|WS_SYSMENU,0),"Failed to adjust window rect!");
 
 		handle = CreateWindow(WindowClass::GetName(),title,WS_CAPTION|WS_OVERLAPPEDWINDOW|WS_SYSMENU,CW_USEDEFAULT,CW_USEDEFAULT,wr.right - wr.left,wr.bottom - wr.top,0,0,WindowClass::GetInstance(),this);
 
@@ -120,6 +120,10 @@ namespace Lobster
 		{
 			SetCursorVisible(true);
 			SetCursorConfined(false);
+
+			RECT r;
+			GetWindowRect(handle,&r);
+			SetCursorPos(r.left + width/2,r.top + height/2);
 		}
 		else
 		{
@@ -303,7 +307,7 @@ namespace Lobster
 			//}
 			if(!(lparam & 0x40000000) || Input::Autorepeat())
 			{
-				KeyPressedEvent keypressedevent(Win32ToGlfwKey(wparam));
+				KeyPressedEvent keypressedevent(Input::Win32ToGlfwKey(wparam));
 				this->event_callback(keypressedevent);
 			}
 			break;
@@ -315,7 +319,7 @@ namespace Lobster
 			//{
 				//break;
 			//}
-			KeyReleasedEvent keyreleasedevent(Win32ToGlfwKey(wparam));
+			KeyReleasedEvent keyreleasedevent(Input::Win32ToGlfwKey(wparam));
 			this->event_callback(keyreleasedevent);
 			break;
 		}

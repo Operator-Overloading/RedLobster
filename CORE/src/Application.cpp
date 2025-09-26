@@ -5,14 +5,19 @@
 #include "Logger.hpp"
 #include "Macros.hpp"
 
-#include <iostream>
+#include "RENDERING/include/Context.hpp"
+#include "RENDERING/include/Renderer.hpp"
 
 namespace Lobster
 {
 	Application::Application()
 	{
-		window = new OpenGLWindow(800,600,"lobsta");
+		window = new Win32Window(800,600,"lobsta");
 		window->SetEventCallbackFunction(std::bind(&Application::OnEvent,this,std::placeholders::_1));
+
+		Context::CreateContext(window);
+
+		renderer = Renderer::Create();
 	}
 	
 	void Application::OnEvent(Event& event)
@@ -30,7 +35,7 @@ namespace Lobster
 
 		for(auto it = layer_stack.rbegin(); it != layer_stack.rend(); ++it)
 		{
-			if(event.IsConsumed()) 
+			if(event.IsConsumed())
 				break;
 
 			(*it)->OnEvent(event);
@@ -54,6 +59,8 @@ namespace Lobster
 
 		OnStart();
 
+		Input::Init();
+
 		while(is_running)
 		{
 			Input::MouseUpdate();
@@ -63,6 +70,12 @@ namespace Lobster
 			if(!window->IsMinimized())
 			{
 				OnUpdate(0.0f);
+
+				{
+					renderer->Clear(0.24f,0.08f,0.12f,1.0f);
+
+					Context::SwapBuffers();
+				}
 
 				{
 					for(Layer* layer : layer_stack) layer->OnUpdate(0.0f);

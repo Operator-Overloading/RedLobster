@@ -10,6 +10,7 @@ namespace Lobster
 {
 	class LOBSTER_API Win32Window : public Window
 	{
+		friend class Context;
 	private:
 		class WindowClass
 		{
@@ -46,8 +47,7 @@ namespace Lobster
 		void SetTitle(const std::string& title) override;
 		void SetCursorConfined(bool confined) override;
 		void SetCursorVisible(bool visible) override;
-
-		void SetCursorEnabled(bool enabled);
+		void SetCursorEnabled(bool enabled) override;
 
 		static std::optional<int> ProcessMessages();
 	private:

@@ -9,6 +9,7 @@ namespace Lobster
 {
 	class LOBSTER_API OpenGLWindow : public Window
 	{
+		friend class Context;
 	public:
 		OpenGLWindow(int width,int height,const char* title);
 		virtual ~OpenGLWindow() override;
@@ -30,8 +31,9 @@ namespace Lobster
 		void SetTitle(const std::string& title) override;
 		void SetCursorConfined(bool confined) override;
 		void SetCursorVisible(bool visible) override;
+		void SetCursorEnabled(bool enabled) override;
 
-		void SetCursorEnabled(bool enabled);
+		void SetWindowIcon(const char* path);
 	private:
 		int width, height;
 		bool minimized = false, focused = true, cursor_enabled = true, cursor_in_window = false, should_close = false;

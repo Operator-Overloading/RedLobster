@@ -32,7 +32,7 @@
     <ClCompile Include="src\windows\Win32Window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\opengl\GLFWWindow.cpp">
+    <ClCompile Include="src\opengl\OpenGLWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

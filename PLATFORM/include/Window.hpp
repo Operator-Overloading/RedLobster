@@ -26,6 +26,7 @@ namespace Lobster
 
 		virtual void SetCursorConfined(bool b) = 0;
 		virtual void SetCursorVisible(bool b) = 0;
+		virtual void SetCursorEnabled(bool b) = 0;
 		virtual void SetTitle(const std::string& title) = 0;
 
 		virtual void* GetHandle() = 0;
